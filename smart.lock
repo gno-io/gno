@@ -1,0 +1,11 @@
+{
+  "meteor": {
+    "git": "https://github.com/royletron/meteor.git",
+    "branch": "master",
+    "commit": "046b509b2360d3945dad1e9ce5a32a8ecd8e2af3"
+  },
+  "dependencies": {
+    "basePackages": {},
+    "packages": {}
+  }
+}
