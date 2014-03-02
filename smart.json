@@ -1,0 +1,6 @@
+{
+"meteor": {
+    "git": "https://github.com/royletron/meteor.git",
+    "branch": "master"
+}
+}
