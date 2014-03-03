@@ -2,55 +2,38 @@
 #
 # Helper function for publications below to abstract out common pattern.
 #
-# Takes an object of format:
-#	compositions: [ ids ]
-#	findings: [ ids ]
-#	people: [ ids ]
+# Takes an obj of format:
+#	composition: [ ids ]
+#	finding: [ ids ]
+#	person: [ ids ]
 #	...
-# and for every collection, it applies param f to 
-
-Iterates over every collection and 
+# and a params object to modify the find performed on each collection.
 # collects the result of calling f on that function in a new object
-iterThroughCollections = (f, obj) ->
+iterThroughCollections = (obj, params) ->
+    r = {}
+    for collection, arr of obj
+        if arr.length > 0
+            r[collection] = Gno[collection].items.find({_id: $in: arr}, params)
+        else
+            r[collection] = Gno[collection].items.find _id:0
+    return r
     
-
-
-# and publishes the objects with those ids from those collections.
+# See helper function above for format of param 'obj'.
+#
+# Publishes the complete items, content included.
 Meteor.publish 'itemData', (items) ->
-	r = {}
-	for collection, arr of items
-		if arr.length > 0
-			r[collection] = Gno.please 'find', _id: $in: arr,
-			    for: 'items'
-			    in: collection
-			
-		else
-			r[collection] = Gno.please 'find', _id:0, 
-			    for: 'items' # return empty cursor
-			    in: collection
+    iterThroughCollections items, {}
 
-# Takes object of the same format as the above publication, but excludes the 
-# actual content.
+# See iterThroughCollections() above for format of param 'obj'.
+#
+# Publishes items without their content data (only title, author, brief)
 Meteor.publish 'handleData', (handles) ->
-	r = {}
-	for collection, arr of handles
-		if arr.length > 0
-			r[collection] = Gno.please 'find', { _id: $in: arr, fields: content: 0 },
-			    for: 'items'
-			    in: collection
-			
-		else
-			r[collection] = Gno.please 'find', _id:0, 
-			    for: 'items' # return empty cursor
-			    in: collection
+    iterThroughCollections handles, fields: content: 0
 
-			
 Meteor.publish 'indexData', (userId) ->
     r = {}
+    console.log userId
     for c in Gno.collections
-        r[c] = Gno.please 'find', user: userId,
-            for: 'index'
-            in: c
-	   
-		
-	
+        r[c] = Gno[c].index.find user: userId
+        console.log c
+    return r   
