@@ -1,6 +1,9 @@
 {
-"meteor": {
-    "git": "https://github.com/royletron/meteor.git",
+  "meteor": {
+    "git": "https://github.com/gno-io/meteor.git", 
     "branch": "master"
-}
+  },
+  "packages": {
+    "iron-router": {}
+  }
 }
